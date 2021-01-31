@@ -1,4 +1,15 @@
-FROM library/tomcat:10-jdk11-corretto
+FROM library/tomcat:9-jre11
+# The Debian image that should be used as the basis for the guacd image
+ARG DEBIAN_BASE_IMAGE=buster-slim
+
+# Use Debian as base for the build
+FROM debian:${DEBIAN_BASE_IMAGE} AS builder
+ARG DEBIAN_RELEASE=buster-backports
+
+# Add repository for specified Debian release if not already present in
+# sources.list
+RUN grep " ${DEBIAN_RELEASE} " /etc/apt/sources.list || echo >> /etc/apt/sources.list \
+  "deb http://deb.debian.org/debian ${DEBIAN_RELEASE} main contrib non-free"
 
 ENV ARCH=amd64 \
   GUAC_VER=1.3.0 \
@@ -27,7 +38,7 @@ RUN apt-get update && apt-get install -y \
     libswscale-dev freerdp2-dev libfreerdp-client2-2 libpango1.0-dev \
     libssh2-1-dev libtelnet-dev libvncserver-dev \
     libpulse-dev libssl-dev libvorbis-dev libwebp-dev libwebsockets-dev \
-    ghostscript postgresql-${PG_MAJOR} tar\
+    ghostscript postgresql-${PG_MAJOR} \
   && rm -rf /var/lib/apt/lists/*
 
 # Link FreeRDP to where guac expects it to be
