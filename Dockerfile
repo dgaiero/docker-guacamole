@@ -10,6 +10,8 @@ ENV ARCH=amd64 \
   POSTGRES_DB=guacamole_db
 
 # Fix freeRDP
+RUN apt-get install -y software-properties-common
+RUN apt-get update
 RUN add-apt-repository ppa:remmina-ppa-team/freerdp-daily
 RUN apt-get update
 
