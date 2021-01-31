@@ -1,11 +1,5 @@
 FROM library/tomcat:9-jre11
-# The Debian image that should be used as the basis for the guacd image
-ENV DEBIAN_RELEASE=buster-backports
 
-# Add repository for specified Debian release if not already present in
-# sources.list
-RUN grep " ${DEBIAN_RELEASE} " /etc/apt/sources.list || echo >> /etc/apt/sources.list \
-  "deb http://deb.debian.org/debian ${DEBIAN_RELEASE} main contrib non-free"
 
 ENV ARCH=amd64 \
   GUAC_VER=1.3.0 \
@@ -14,6 +8,11 @@ ENV ARCH=amd64 \
   PGDATA=/config/postgres \
   POSTGRES_USER=guacamole \
   POSTGRES_DB=guacamole_db
+
+# Fix freeRDP
+RUN add-apt-repository ppa:remmina-ppa-team/freerdp-daily
+RUN apt-get update
+
 
 # Apply the s6-overlay
 
@@ -31,8 +30,8 @@ WORKDIR ${GUACAMOLE_HOME}
 RUN apt-get update && apt-get install -y \
     libcairo2-dev libjpeg62-turbo-dev libpng-dev \
     libossp-uuid-dev libavcodec-dev libavutil-dev \
-    libswscale-dev freerdp2-dev libfreerdp-client2-2 libpango1.0-dev \
-    libssh2-1-dev libtelnet-dev libvncserver-dev \
+    libswscale-dev freerdp2-dev freerdp2-x11 libfreerdp-client2-2 \
+    libpango1.0-dev libssh2-1-dev libtelnet-dev libvncserver-dev \
     libpulse-dev libssl-dev libvorbis-dev libwebp-dev libwebsockets-dev \
     ghostscript postgresql-${PG_MAJOR} \
   && rm -rf /var/lib/apt/lists/*
