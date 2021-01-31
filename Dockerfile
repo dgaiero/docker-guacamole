@@ -1,4 +1,4 @@
-FROM library/tomcat:9-jre11
+FROM library/tomcat:10.0-jdk11
 
 
 ENV ARCH=amd64 \
@@ -10,11 +10,11 @@ ENV ARCH=amd64 \
   POSTGRES_DB=guacamole_db
 
 # Fix freeRDP
-RUN apt-get update
-RUN apt-get install -y software-properties-common
-RUN apt-get update
-RUN add-apt-repository ppa:remmina-ppa-team/freerdp-daily
-RUN apt-get update
+# RUN apt-get update
+# RUN apt-get install -y software-properties-common
+# RUN apt-get update
+# RUN add-apt-repository ppa:remmina-ppa-team/freerdp-daily
+# RUN apt-get update
 
 
 # Apply the s6-overlay
@@ -31,6 +31,7 @@ WORKDIR ${GUACAMOLE_HOME}
 
 # Install dependencies
 RUN apt-get update && apt-get install -y \
+    build-essential \
     libcairo2-dev libjpeg62-turbo-dev libpng-dev \
     libossp-uuid-dev libavcodec-dev libavutil-dev \
     libswscale-dev freerdp2-dev freerdp2-x11 libfreerdp-client2-2 \
@@ -47,7 +48,7 @@ RUN [ "$ARCH" = "amd64" ] && ln -s /usr/local/lib/freerdp /usr/lib/x86_64-linux-
 RUN curl -SLO "http://apache.org/dyn/closer.cgi?action=download&filename=guacamole/${GUAC_VER}/source/guacamole-server-${GUAC_VER}.tar.gz" \
   && tar -xzf guacamole-server-${GUAC_VER}.tar.gz \
   && cd guacamole-server-${GUAC_VER} \
-  && ./configure \
+  && ./configure --enable-allow-freerdp-snapshots\
   && make -j$(getconf _NPROCESSORS_ONLN) \
   && make install \
   && cd .. \
