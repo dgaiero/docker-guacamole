@@ -1,4 +1,4 @@
-FROM library/tomcat:10.0-jdk11
+FROM library/tomcat:9-jre11
 
 
 ENV ARCH=amd64 \
