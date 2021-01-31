@@ -13,7 +13,7 @@ ENV ARCH=amd64 \
 RUN apt-get update
 RUN apt-get install -y software-properties-common
 RUN apt-get update
-RUN add-apt-repository ppa:remmina-ppa-team/freerdp-daily/ubuntu bionic main
+RUN add-apt-repository ppa:remmina-ppa-team/freerdp-daily
 RUN apt-get update
 
 
