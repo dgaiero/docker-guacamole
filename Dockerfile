@@ -1,10 +1,6 @@
 FROM library/tomcat:9-jre11
 # The Debian image that should be used as the basis for the guacd image
-ENV DEBIAN_BASE_IMAGE=buster-slim \
-  DEBIAN_RELEASE=buster-backports
-
-# Use Debian as base for the build
-FROM debian:${DEBIAN_BASE_IMAGE} AS builder
+ENV DEBIAN_RELEASE=buster-backports
 
 # Add repository for specified Debian release if not already present in
 # sources.list
